@@ -6,7 +6,7 @@ PM_Table_Operations is a console application designed to automate VantagePm data
                    Multiple table types can be generated concurrently.
     `CreateCounterDefinitionDml`: Generates CFG_COUNTER_DEFINITION DMLs and its rollback data.
 
-##How It Works:
+## How It Works:
 
 The application starts by parsing the command-line arguments defined in the CliArguments class. Based on the selected operation type, it then:
 
@@ -40,8 +40,6 @@ The application accepts the following command-line options:
     Determines whether to hash columns.
         Use `1` for hashing columns.
         Use `0` for no hashing.
-
-Example Commands
 
 ## Example for creating tables:
 `dotnet run -- -t CreateTable -i path/to/your/inputfile.txt -c Numeric`
