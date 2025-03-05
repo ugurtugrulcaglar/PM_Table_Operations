@@ -67,12 +67,12 @@ namespace PM_Table_Operations
 -- RAW TABLES
 -- pipm_etl.{table.TableName}_HOT_LOCAL definition
 
-CREATE TABLE pipm_etl.{table.TableName}_HOT_LOCAL ON CLUSTER 'vantch'
+CREATE TABLE pipm_etl.{table.TableName}_HOT_LOCAL ON CLUSTER '{{cluster}}'
 ({mainColoums}
 {customCounters}
 
 )
-ENGINE = ReplicatedReplacingMergeTree('/clickhouse/vantch/{{layer}}-{{shard}}/pipm_etl/{table.TableName}_HOT_LOCAL',
+ENGINE = ReplicatedReplacingMergeTree('/clickhouse/{{cluster}}/{{layer}}-{{shard}}/pipm_etl/{table.TableName}_HOT_LOCAL',
  '{{replica}}',
  INSERT_DATETIME)
 PARTITION BY toYYYYMMDD(DATETIME)
@@ -87,8 +87,8 @@ SETTINGS min_bytes_for_wide_part = '524G',
 
 -- pipm_etl.{table.TableName}_COLD_LOCAL definition
 
-CREATE TABLE pipm_etl.{table.TableName}_COLD_LOCAL ON CLUSTER 'vantch' as pipm_etl.{table.TableName}_HOT_LOCAL
-ENGINE = ReplicatedReplacingMergeTree('/clickhouse/vantch/{{layer}}-{{shard}}/pipm_etl/{table.TableName}_COLD_LOCAL',
+CREATE TABLE pipm_etl.{table.TableName}_COLD_LOCAL ON CLUSTER '{{cluster}}' as pipm_etl.{table.TableName}_HOT_LOCAL
+ENGINE = ReplicatedReplacingMergeTree('/clickhouse/{{cluster}}/{{layer}}-{{shard}}/pipm_etl/{table.TableName}_COLD_LOCAL',
  '{{replica}}',
  INSERT_DATETIME)
 PARTITION BY toYYYYMM(DATETIME)
@@ -104,8 +104,8 @@ SETTINGS min_bytes_for_wide_part = '524G',
 
 -- pipm_etl.{table.TableName} definition
 
-CREATE TABLE pipm_etl.{table.TableName} ON CLUSTER 'vantch' as pipm_etl.{table.TableName}_HOT_LOCAL
-ENGINE = Distributed('vantch',
+CREATE TABLE pipm_etl.{table.TableName} ON CLUSTER '{{cluster}}' as pipm_etl.{table.TableName}_HOT_LOCAL
+ENGINE = Distributed('{{cluster}}',
  'pipm_etl',
  '{table.TableName}_HOT_LOCAL',
 jumpConsistentHash(cityHash64('{table.TableName}'), 6));
@@ -113,8 +113,8 @@ jumpConsistentHash(cityHash64('{table.TableName}'), 6));
 
 -- pipm.{table.TableName} definition
 
-CREATE TABLE pipm.{table.TableName} ON CLUSTER 'vantch' as pipm_etl.{table.TableName}_HOT_LOCAL
-ENGINE = Distributed('vantch',
+CREATE TABLE pipm.{table.TableName} ON CLUSTER '{{cluster}}' as pipm_etl.{table.TableName}_HOT_LOCAL
+ENGINE = Distributed('{{cluster}}',
  'pipm',
  'MERGE_{table.TableName}',
  rand());
@@ -122,7 +122,7 @@ ENGINE = Distributed('vantch',
 
 -- pipm.MERGE_{table.TableName} definition
 
-CREATE TABLE pipm.MERGE_{table.TableName} ON CLUSTER 'vantch' as pipm_etl.{table.TableName}_HOT_LOCAL
+CREATE TABLE pipm.MERGE_{table.TableName} ON CLUSTER '{{cluster}}' as pipm_etl.{table.TableName}_HOT_LOCAL
 ENGINE = Merge('pipm_etl',
  '^{table.TableName}_HOT_.+|^{table.TableName}_COLD_.+');
 
@@ -131,8 +131,8 @@ ENGINE = Merge('pipm_etl',
 
 -- pipm_etl.HIST_{table.TableName}_HOT_LOCAL definition
 
-CREATE TABLE pipm_etl.HIST_{table.TableName}_HOT_LOCAL ON CLUSTER 'vantch' as pipm_etl.{table.TableName}_HOT_LOCAL
-ENGINE = ReplicatedReplacingMergeTree('/clickhouse/vantch/{{layer}}-{{shard}}/pipm_etl/HIST_{table.TableName}_HOT_LOCAL',
+CREATE TABLE pipm_etl.HIST_{table.TableName}_HOT_LOCAL ON CLUSTER '{{cluster}}' as pipm_etl.{table.TableName}_HOT_LOCAL
+ENGINE = ReplicatedReplacingMergeTree('/clickhouse/{{cluster}}/{{layer}}-{{shard}}/pipm_etl/HIST_{table.TableName}_HOT_LOCAL',
  '{{replica}}',
  INSERT_DATETIME)
 PARTITION BY toYYYYMMDD(DATETIME)
@@ -147,8 +147,8 @@ SETTINGS min_bytes_for_wide_part = '524G',
 
 -- pipm_etl.HIST_{table.TableName}_COLD_LOCAL definition
 
-CREATE TABLE pipm_etl.HIST_{table.TableName}_COLD_LOCAL ON CLUSTER 'vantch' as pipm_etl.{table.TableName}_HOT_LOCAL
-ENGINE = ReplicatedReplacingMergeTree('/clickhouse/vantch/{{layer}}-{{shard}}/pipm_etl/HIST_{table.TableName}_COLD_LOCAL',
+CREATE TABLE pipm_etl.HIST_{table.TableName}_COLD_LOCAL ON CLUSTER '{{cluster}}' as pipm_etl.{table.TableName}_HOT_LOCAL
+ENGINE = ReplicatedReplacingMergeTree('/clickhouse/{{cluster}}/{{layer}}-{{shard}}/pipm_etl/HIST_{table.TableName}_COLD_LOCAL',
  '{{replica}}',
  INSERT_DATETIME)
 PARTITION BY toYYYYMM(DATETIME)
@@ -164,8 +164,8 @@ SETTINGS min_bytes_for_wide_part = '524G',
 
 -- pipm_etl.HIST_{table.TableName} definition
 
-CREATE TABLE pipm_etl.HIST_{table.TableName} ON CLUSTER 'vantch' as pipm_etl.{table.TableName}_HOT_LOCAL
-ENGINE = Distributed('vantch',
+CREATE TABLE pipm_etl.HIST_{table.TableName} ON CLUSTER '{{cluster}}' as pipm_etl.{table.TableName}_HOT_LOCAL
+ENGINE = Distributed('{{cluster}}',
  'pipm_etl',
  'HIST_{table.TableName}_HOT_LOCAL',
 jumpConsistentHash(cityHash64('{table.TableName}'), 6));
@@ -173,8 +173,8 @@ jumpConsistentHash(cityHash64('{table.TableName}'), 6));
 
 -- pipm.HIST_{table.TableName} definition
 
-CREATE TABLE pipm.HIST_{table.TableName} ON CLUSTER 'vantch' as pipm_etl.{table.TableName}_HOT_LOCAL
-ENGINE = Distributed('vantch',
+CREATE TABLE pipm.HIST_{table.TableName} ON CLUSTER '{{cluster}}' as pipm_etl.{table.TableName}_HOT_LOCAL
+ENGINE = Distributed('{{cluster}}',
  'pipm',
  'MERGE_HIST_{table.TableName}',
  rand());
@@ -182,7 +182,7 @@ ENGINE = Distributed('vantch',
 
 -- pipm.MERGE_HIST_{table.TableName} definition
 
-CREATE TABLE pipm.MERGE_HIST_{table.TableName} ON CLUSTER 'vantch' as pipm_etl.{table.TableName}_HOT_LOCAL
+CREATE TABLE pipm.MERGE_HIST_{table.TableName} ON CLUSTER '{{cluster}}' as pipm_etl.{table.TableName}_HOT_LOCAL
 ENGINE = Merge('pipm_etl',
  '^HIST_{table.TableName}_HOT_.+|^HIST_{table.TableName}_COLD_.+');
 
@@ -195,16 +195,16 @@ ENGINE = Merge('pipm_etl',
 
         public string DropClickHousePMTable(PmTable obj)
         {
-            string newColoumn = $@"DROP TABLE pipm.{obj.TableName} ON CLUSTER 'vantch';
-DROP TABLE pipm.HIST_{obj.TableName} ON CLUSTER 'vantch';
-DROP TABLE pipm.MERGE_{obj.TableName} ON CLUSTER 'vantch';
-DROP TABLE pipm.MERGE_HIST_{obj.TableName} ON CLUSTER 'vantch';
-DROP TABLE pipm_etl.{obj.TableName} ON CLUSTER 'vantch';
-DROP TABLE pipm_etl.{obj.TableName}_HOT_LOCAL ON CLUSTER 'vantch';
-DROP TABLE pipm_etl.{obj.TableName}_COLD_LOCAL ON CLUSTER 'vantch';
-DROP TABLE pipm_etl.HIST_{obj.TableName} ON CLUSTER 'vantch';
-DROP TABLE pipm_etl.HIST_{obj.TableName}_HOT_LOCAL ON CLUSTER 'vantch';
-DROP TABLE pipm_etl.HIST_{obj.TableName}_COLD_LOCAL ON CLUSTER 'vantch';
+            string newColoumn = $@"DROP TABLE pipm.{obj.TableName} ON CLUSTER '{{cluster}}';
+DROP TABLE pipm.HIST_{obj.TableName} ON CLUSTER '{{cluster}}';
+DROP TABLE pipm.MERGE_{obj.TableName} ON CLUSTER '{{cluster}}';
+DROP TABLE pipm.MERGE_HIST_{obj.TableName} ON CLUSTER '{{cluster}}';
+DROP TABLE pipm_etl.{obj.TableName} ON CLUSTER '{{cluster}}';
+DROP TABLE pipm_etl.{obj.TableName}_HOT_LOCAL ON CLUSTER '{{cluster}}';
+DROP TABLE pipm_etl.{obj.TableName}_COLD_LOCAL ON CLUSTER '{{cluster}}';
+DROP TABLE pipm_etl.HIST_{obj.TableName} ON CLUSTER '{{cluster}}';
+DROP TABLE pipm_etl.HIST_{obj.TableName}_HOT_LOCAL ON CLUSTER '{{cluster}}';
+DROP TABLE pipm_etl.HIST_{obj.TableName}_COLD_LOCAL ON CLUSTER '{{cluster}}';
 ";
             return newColoumn;
         }
@@ -212,15 +212,12 @@ DROP TABLE pipm_etl.HIST_{obj.TableName}_COLD_LOCAL ON CLUSTER 'vantch';
         public string TruncateChTables(PmTable obj)
         {
             string newColoumn = $@"
-TRUNCATE TABLE pipm_etl.{obj.TableName}_HOT_LOCAL ON CLUSTER 'vantch';
-TRUNCATE TABLE pipm_etl.{obj.TableName}_COLD_LOCAL ON CLUSTER 'vantch';
-TRUNCATE TABLE pipm_etl.HIST_{obj.TableName}_HOT_LOCAL ON CLUSTER 'vantch';
-TRUNCATE TABLE pipm_etl.HIST_{obj.TableName}_COLD_LOCAL ON CLUSTER 'vantch';
+TRUNCATE TABLE pipm_etl.{obj.TableName}_HOT_LOCAL ON CLUSTER '{{cluster}}';
+TRUNCATE TABLE pipm_etl.{obj.TableName}_COLD_LOCAL ON CLUSTER '{{cluster}}';
+TRUNCATE TABLE pipm_etl.HIST_{obj.TableName}_HOT_LOCAL ON CLUSTER '{{cluster}}';
+TRUNCATE TABLE pipm_etl.HIST_{obj.TableName}_COLD_LOCAL ON CLUSTER '{{cluster}}';
 ";
-
             return newColoumn;
         }
     }
-
-
 }

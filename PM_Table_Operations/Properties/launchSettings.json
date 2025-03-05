@@ -2,7 +2,7 @@
   "profiles": {
     "PM_Table_Operations": {
       "commandName": "Project",
-      "commandLineArgs": "-t CreateCounterDefinationDml -i inputCfgCounter.csv -c N -h 1"
+      "commandLineArgs": "-t CreateCounterDefinitionDml -i inputCfgCounter.csv -c N -h 1"
     }
   }
 }

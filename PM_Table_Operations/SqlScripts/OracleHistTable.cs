@@ -47,7 +47,6 @@ namespace PM_Table_Operations
         public string CreateOraHistTable(PmTable table, string mainColoums)
         {
             string TableName = $"HIST_{table.TableName}";
-            //string tblSpc = "TBS_PIADMIN";
             string schema = "PIADMIN";
 
 
@@ -73,9 +72,8 @@ CREATE TABLE ""{schema}"".""{TableName}""
 
         public string DropOracleHistTable(PmTable obj)
         {
-            return $@"DROP TABLE PIADMIN.HIST_{obj.TableName} PURGE;";
+            return $@"DROP TABLE HIST_{obj.TableName} PURGE;";
         }
-
     }
 
 }

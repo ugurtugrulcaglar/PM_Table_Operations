@@ -135,7 +135,7 @@ namespace PM_Table_Operations
             }
 
 
-            string query = @$"INSERT INTO PIADMIN.CFG_AGGREGATOR
+            string query = @$"INSERT INTO CFG_AGGREGATOR
 (OID, AGGREGATORID, RAWTABLENAME, HISTTABLENAME, AGGREGATIONTYPE, ENABLED, KEYFIELDS, NONCOUNTERFIELDS, SKIPPEDFIELDS, NUMSPLITS, GROUPNAME, EXPORTTIMEOUT, IMPORTTIMEOUT, DESCRIPTION, TARGETDBS)
 VALUES(28601, {aggregatorid}, '{table.TableName}', 'HIST_{table.TableName}', 'day', 1, 'SOURCE,MONAME', '{nonCounterFields}', 'INSERT_DATETIME', 1, '{tecn}', NULL, NULL, NULL, 'piworks-ch-etl,piworks-db');";
 
@@ -146,7 +146,7 @@ VALUES(28601, {aggregatorid}, '{table.TableName}', 'HIST_{table.TableName}', 'da
 
         public string CrreateCfgAggregatorRollback(PmTable table)
         {
-            string query = @$"DELETE FROM  PIADMIN.CFG_AGGREGATOR WHERE RAWTABLENAME = '{table.TableName}';";
+            string query = @$"DELETE FROM CFG_AGGREGATOR WHERE RAWTABLENAME = '{table.TableName}';";
             return query;
 
         }

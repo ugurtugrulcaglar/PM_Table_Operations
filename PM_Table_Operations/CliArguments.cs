@@ -4,7 +4,7 @@ using CommandLine;
 
 internal class CliArguments
 {
-    [Option('t', "operation-type", Required = true, HelpText = "Input file type: 'CreateTable', 'CreateCounterDefinationDml'.")]
+    [Option('t', "operation-type", Required = true, HelpText = "Input file type: 'CreateTable', 'CreateCounterDefinitionDml'.")]
     public OpetationType OpetationType { get; set; }
 
     [Option('i', "input-file-name", Required = true, HelpText = "Input file name.")]
@@ -21,7 +21,7 @@ internal class CliArguments
 public enum OpetationType
 {
     CreateTable,
-    CreateCounterDefinationDml
+    CreateCounterDefinitionDml
 }
 
 public enum CounterType

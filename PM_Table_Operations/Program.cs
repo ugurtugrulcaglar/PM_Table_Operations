@@ -39,7 +39,7 @@ namespace PM_Table_Operations
                             t.CreatePMTables();
                             break;
 
-                        case OpetationType.CreateCounterDefinationDml:
+                        case OpetationType.CreateCounterDefinitionDml:
                             var c = new CounterOperations(
                                cliArguments.InputFileName,
                                cliArguments.HashFlag);
