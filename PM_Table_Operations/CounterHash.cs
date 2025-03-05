@@ -7,11 +7,9 @@ namespace PM_Table_Operations
 
     public class CounterHash
     {
+        string connectionString = "Data Source=db.piworks.net:1521/UAT12;User Id=MNP_INDOSAT;Password=mnp;";
         public void GetCounterHash(CounterDefinition obj)
         {
-
-            string connectionString = "Data Source=localhost:1521/ORCL;User Id=oracle;Password=oracle;";
-
             using (OracleConnection connection = new OracleConnection(connectionString))
             {
                 try
@@ -46,7 +44,6 @@ namespace PM_Table_Operations
         public string GetCounterHash(string counter)
         {
             string hashed_counter = "";
-            string connectionString = "Data Source=localhost:1521/ORCL;User Id=oracle;Password=oracle;";
 
             using (OracleConnection connection = new OracleConnection(connectionString))
             {
@@ -73,7 +70,6 @@ namespace PM_Table_Operations
                 }
             }
         }
-
     }
 }
 
